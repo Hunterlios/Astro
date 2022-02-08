@@ -44,6 +44,15 @@ void showMenu(RenderWindow& window, Text menu[], int n)
 	}
 }
 
+void instruction(RenderWindow& window, Text howToMove[])
+{
+	for (size_t i = 0; i < 2; i++)
+	{
+		window.draw(howToMove[i]);
+	}
+	
+}
+
 void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double distance, Font font)
 {
 	int highestPoints = 0;
@@ -144,17 +153,36 @@ int main()
 
 	//MENU
 	bool menuDisplayed = true;
-	Text menu[2];
+	bool howToPlay = false;
+	Text menu[3];
 	menu[0].setFont(font);
 	menu[1].setFont(font);
+	menu[2].setFont(font);
 	menu[0].setFillColor(Color::White);
 	menu[1].setFillColor(Color::White);
+	menu[2].setFillColor(Color::White);
 	menu[0].setPosition(window.getSize().x / 2 - 90.0f, window.getSize().y / 2 - 100.0f);
 	menu[1].setPosition(window.getSize().x / 2 - 40.0f, window.getSize().y / 2 + 20.0f);
+	menu[2].setPosition(window.getSize().x / 2 - 125.0f, window.getSize().y / 2 + 160.0f);
 	menu[0].setCharacterSize(80);
 	menu[1].setCharacterSize(40);
+	menu[2].setCharacterSize(40);
 	menu[0].setString("PLAY");
 	menu[1].setString("EXIT");
+	menu[2].setString("HOW TO PLAY");
+
+	//HOW TO PLAY
+	Text howToMove[2];
+	howToMove[0].setFont(font);
+	howToMove[0].setFillColor(Color::White);
+	howToMove[0].setCharacterSize(30);
+	howToMove[0].setPosition(window.getSize().x / 2 - 260.0f, window.getSize().y / 2 - 200.0f);
+	howToMove[0].setString("Use A to move left and D to move right.\n\t\t\t      Use SPACE to shoot.");
+	howToMove[1].setFont(font);
+	howToMove[1].setFillColor(Color::White);
+	howToMove[1].setCharacterSize(40);
+	howToMove[1].setPosition(window.getSize().x / 2 - 110.0f, window.getSize().y / 2 - 20.0f);
+	howToMove[1].setString("MAIN MENU");
 
 	//GAME OVER
 	bool gameOver = false;
@@ -189,29 +217,33 @@ int main()
 	player.setTexture(&playerTexture);
 	playerTexture.setSmooth(true);
 	player.setSize(Vector2f(40.0f, 80.0f));
-	player.setPosition(Vector2f(window.getSize().x / 2 - player.getSize().x / 2, window.getSize().y - player.getSize().y * 2 - 50.0f));
+	player.setPosition(Vector2f(window.getSize().x / 2 - 20.0f, window.getSize().y - player.getSize().y * 2 - 50.0f));
 	Vector2f playerCenter;
 	int hp = 3;
 	int k = 2;
 
 	//BULLETS
 	RectangleShape bullet;
-	bullet.setFillColor(Color::Red);
+	Texture bulletTexture;
+	bulletTexture.loadFromFile("textures/laser.png");
+	bullet.setTexture(&bulletTexture);
 	bullet.setSize(Vector2f(5.0f, 20.0f));
 	vector<RectangleShape> bullets;
-	bullets.push_back(RectangleShape(bullet));
 	int shootTimer = 0;
 	int points = 0;
 
 	//ENEMIES
 	vector<RectangleShape> enemies;
 	RectangleShape enemy;
-	Texture enemyTexture;
-	enemyTexture.loadFromFile("textures/Asteroida.png");
-	enemy.setTexture(&enemyTexture);
-	enemyTexture.setSmooth(true);
+	Texture enemyTexture[3];
+	enemyTexture[0].loadFromFile("textures/asteroida1.png");
+	enemyTexture[1].loadFromFile("textures/asteroida2.png");
+	enemyTexture[2].loadFromFile("textures/asteroida3.png");
+	for (size_t i = 0; i < 3; i++)
+	{
+		enemyTexture[i].setSmooth(true);
+	}
 	enemy.setSize(Vector2f(55.0f, 55.0f));
-	enemies.push_back(RectangleShape(enemy));
 	int enemyTimer = 0;
 	float movementSpeed = 250.0f;
 
@@ -265,7 +297,7 @@ int main()
 		window.clear();
 		if (menuDisplayed)
 		{
-			showMenu(window, menu, 2);
+			showMenu(window, menu, 3);
 			if (Mouse::isButtonPressed(Mouse::Button::Left))
 			{
 				auto mousePosition = Mouse::getPosition(window);
@@ -277,6 +309,11 @@ int main()
 				if (menu[1].getGlobalBounds().contains(translatedPosition))
 				{
 					window.close();
+				}
+				if (menu[2].getGlobalBounds().contains(translatedPosition))
+				{
+					howToPlay = true;
+					menuDisplayed = false;
 				}
 			}
 		}
@@ -301,14 +338,29 @@ int main()
 			}
 		}
 
-		if (!menuDisplayed && !gameOver)
+		if (howToPlay)
+		{
+			instruction(window, howToMove);
+			if (Mouse::isButtonPressed(Mouse::Button::Left))
+			{
+				auto mousePosition = Mouse::getPosition(window);
+				auto translatedPosition = window.mapPixelToCoords(mousePosition);
+				if (howToMove[1].getGlobalBounds().contains(translatedPosition))
+				{
+					howToPlay = false;
+					menuDisplayed = true;
+				}
+			}
+		}
+
+		if (!menuDisplayed && !gameOver && !howToPlay)
 		{
 			time = dtClock.restart();
 			dt = time.asSeconds();
 
 			/*UPDATE*/
 			playerCenter = Vector2f(player.getPosition().x + player.getSize().x / 2, player.getPosition().y + player.getScale().y / 2);
-			if (shootTimer < 60)
+			if (shootTimer < 50)
 			{
 				shootTimer++;
 			}
@@ -328,7 +380,7 @@ int main()
 			}
 
 			//SHOOTING
-			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 60)
+			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 50)
 			{
 				bullet.setPosition(playerCenter);
 				bullets.push_back(RectangleShape(bullet));
@@ -353,6 +405,7 @@ int main()
 				if (enemyTimer >= 80)
 				{
 					enemy.setPosition((rand() % int(window.getSize().x - enemy.getSize().x)), -40.0f);
+					enemy.setTexture(&enemyTexture[rand() % 3]);
 					enemies.push_back(RectangleShape(enemy));
 					enemyTimer = 0;
 				}
