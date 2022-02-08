@@ -36,16 +36,19 @@ void hpLoad(RectangleShape hpShapes[], Texture& hpIcnFull, Texture& hpIcnEmpty, 
 	}
 }
 
-void showMenu(RenderWindow& window, Text menu[], int n)
+void showMenu(RenderWindow& window, Text menu[], int n, Sprite bgSprite)
 {
+	window.draw(bgSprite);
 	for (size_t i = 0; i < n; i++)
 	{
 		window.draw(menu[i]);
 	}
+	
 }
 
-void instruction(RenderWindow& window, Text howToMove[])
+void instruction(RenderWindow& window, Text howToMove[], Sprite bgSprite)
 {
+	window.draw(bgSprite);
 	for (size_t i = 0; i < 2; i++)
 	{
 		window.draw(howToMove[i]);
@@ -53,8 +56,9 @@ void instruction(RenderWindow& window, Text howToMove[])
 	
 }
 
-void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double distance, Font font)
+void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double distance, Font font, Sprite bgSprite)
 {
+	window.draw(bgSprite);
 	int highestPoints = 0;
 	ofstream highscoreWrite;
 	ifstream highscoreRead;
@@ -66,17 +70,17 @@ void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double d
 	Text distancePass;
 	highscoreText.setFont(font);
 	highscoreText.setFillColor(Color::White);
-	highscoreText.setPosition(window.getSize().x / 2 - 160.0f, window.getSize().y / 2 - 30.0f);
+	highscoreText.setPosition(window.getSize().x / 2 - 90.0f, window.getSize().y / 2 - 30.0f);
 	highscoreText.setCharacterSize(30);
 
 	distancePass.setFont(font);
 	distancePass.setFillColor(Color::White);
-	distancePass.setPosition(window.getSize().x / 2 - 160.0f, window.getSize().y / 2 + 10.0f);
+	distancePass.setPosition(window.getSize().x / 2 - 150.0f, window.getSize().y / 2 + 10.0f);
 	distancePass.setCharacterSize(30);
 
 	endPoints.setFont(font);
 	endPoints.setFillColor(Color::White);
-	endPoints.setPosition(window.getSize().x / 2 - 160.0f, window.getSize().y / 2 - 70.0f);
+	endPoints.setPosition(window.getSize().x / 2 - 70.0f, window.getSize().y / 2 - 70.0f);
 	endPoints.setCharacterSize(30);
 	endPoints.setString("Points: " + to_string(points));
 
@@ -105,7 +109,7 @@ void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double d
 }
 
 
-void gameRestart(int& shootTimer, int& points, double& distancePassed, int& enemyTimer, float& movementSpeed, int& hp, int& k, float& dt, int& speedTime, double& currentDistance, float& bgSpeed, float& bgY, vector<RectangleShape>& enemies, RectangleShape hpShapes[], Texture& hpIcnFull, Texture& hpIcnEmpty, RectangleShape& hpShp, Vector2f& hpPos)
+void gameRestart(int& shootTimer, int& points, double& distancePassed, int& enemyTimer, float& movementSpeed, int& hp, int& k, float& dt, int& speedTime, double& currentDistance, float& bgSpeed, float& bgY, vector<RectangleShape>& enemies, RectangleShape hpShapes[], Texture& hpIcnFull, Texture& hpIcnEmpty, RectangleShape& hpShp, Vector2f& hpPos, RectangleShape &player, RenderWindow &window)
 {
 	shootTimer = 0;
 	points = 0;
@@ -120,6 +124,7 @@ void gameRestart(int& shootTimer, int& points, double& distancePassed, int& enem
 	bgSpeed = 250.0f;
 	bgY = 0.0f;
 	enemies.clear();
+	player.setPosition(Vector2f(window.getSize().x / 2 - 20.0f, window.getSize().y - player.getSize().y * 2 - 50.0f));
 	hpLoad(hpShapes, hpIcnFull, hpIcnEmpty, hpShp, hpPos);
 }
 
@@ -143,12 +148,15 @@ int main()
 	//BACKGROUND
 	float bgSpeed = 250.0f;
 	float bgY = 0.0f;
-	Texture backgroundTexture;
+	Texture backgroundTexture, menuBackGround;
 	backgroundTexture.loadFromFile("textures/backGroundSprite.png");
+	menuBackGround.loadFromFile("textures/menuBackgroundSprite.png");
 	backgroundTexture.setRepeated(true);
-	Sprite bgSprite;
+	Sprite bgSprite, menuBgSprite;
 	bgSprite.setTexture(backgroundTexture);
+	menuBgSprite.setTexture(menuBackGround);
 	bgSprite.setPosition(0, 0);
+	menuBgSprite.setPosition(0, 0);
 	bgSprite.setTextureRect(IntRect(0, bgY, 600, 700));
 
 	//MENU
@@ -191,15 +199,15 @@ int main()
 	Text repeat[2];
 	endText.setFont(font);
 	endText.setFillColor(Color::White);
-	endText.setPosition(window.getSize().x / 2 - 160.0f, window.getSize().y / 2 - 200.0f);
+	endText.setPosition(window.getSize().x / 2 - 170.0f, window.getSize().y / 2 - 200.0f);
 	endText.setCharacterSize(60);
 	endText.setString("GAME OVER");
 	repeat[0].setFont(font);
 	repeat[1].setFont(font);
 	repeat[0].setFillColor(Color::White);
 	repeat[1].setFillColor(Color::White);
-	repeat[0].setPosition(window.getSize().x / 2 - 160.0f, window.getSize().y / 2 + 100.0f);
-	repeat[1].setPosition(window.getSize().x / 2 - 160.0f, window.getSize().y / 2 + 160.0f);
+	repeat[0].setPosition(window.getSize().x / 2 - 120.0f, window.getSize().y / 2 + 100.0f);
+	repeat[1].setPosition(window.getSize().x / 2 - 50.0f, window.getSize().y / 2 + 160.0f);
 	repeat[0].setCharacterSize(40);
 	repeat[1].setCharacterSize(40);
 	repeat[0].setString("PLAY AGAIN");
@@ -297,7 +305,7 @@ int main()
 		window.clear();
 		if (menuDisplayed)
 		{
-			showMenu(window, menu, 3);
+			showMenu(window, menu, 3, menuBgSprite);
 			if (Mouse::isButtonPressed(Mouse::Button::Left))
 			{
 				auto mousePosition = Mouse::getPosition(window);
@@ -320,14 +328,14 @@ int main()
 
 		if (gameOver)
 		{
-			gameEnd(window, endText, repeat, points, distancePassed, font);
+			gameEnd(window, endText, repeat, points, distancePassed, font, bgSprite);
 			if (Mouse::isButtonPressed(Mouse::Button::Left))
 			{
 				auto mousePosition = Mouse::getPosition(window);
 				auto translatedPosition = window.mapPixelToCoords(mousePosition);
 				if (repeat[0].getGlobalBounds().contains(translatedPosition))
 				{
-					gameRestart(shootTimer, points, distancePassed, enemyTimer, movementSpeed, hp, k, dt, speedTime, currentDistance, bgSpeed, bgY, enemies, wsk, hpIcnFull, hpIcnEmpty, hpShp, hpPos);
+					gameRestart(shootTimer, points, distancePassed, enemyTimer, movementSpeed, hp, k, dt, speedTime, currentDistance, bgSpeed, bgY, enemies, wsk, hpIcnFull, hpIcnEmpty, hpShp, hpPos, player, window);
 					gameOver = false;
 					menuDisplayed = true;
 				}
@@ -340,7 +348,7 @@ int main()
 
 		if (howToPlay)
 		{
-			instruction(window, howToMove);
+			instruction(window, howToMove, bgSprite);
 			if (Mouse::isButtonPressed(Mouse::Button::Left))
 			{
 				auto mousePosition = Mouse::getPosition(window);
@@ -398,11 +406,11 @@ int main()
 			//ENEMIES
 			if (movementSpeed < 490.0f)
 			{
-				if (enemyTimer < 80)
+				if (enemyTimer < 70)
 				{
 					enemyTimer++;
 				}
-				if (enemyTimer >= 80)
+				if (enemyTimer >= 70)
 				{
 					enemy.setPosition((rand() % int(window.getSize().x - enemy.getSize().x)), -40.0f);
 					enemy.setTexture(&enemyTexture[rand() % 3]);
@@ -412,13 +420,14 @@ int main()
 			}
 			else
 			{
-				if (enemyTimer < 60)
+				if (enemyTimer < 50)
 				{
 					enemyTimer++;
 				}
-				if (enemyTimer >= 60)
+				if (enemyTimer >= 50)
 				{
 					enemy.setPosition((rand() % int(window.getSize().x - enemy.getSize().x)), -40.0f);
+					enemy.setTexture(&enemyTexture[rand() % 3]);
 					enemies.push_back(RectangleShape(enemy));
 					enemyTimer = 0;
 				}

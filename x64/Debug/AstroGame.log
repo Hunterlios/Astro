@@ -1,13 +1,13 @@
 ﻿  main.cpp
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(152,37): warning C4244: "argument": konwersja z "float" do "T", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(160,37): warning C4244: "argument": konwersja z "float" do "T", możliwa utrata danych
           with
           [
               T=int
           ]
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(265,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(407,32): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(421,32): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(511,39): warning C4244: "argument": konwersja z "float" do "T", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(273,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(415,32): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(429,32): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(520,39): warning C4244: "argument": konwersja z "float" do "T", możliwa utrata danych
           with
           [
               T=int
