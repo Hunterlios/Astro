@@ -13,8 +13,8 @@ C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(520,39): warning C4244: "argumen
               T=int
           ]
   Trwa generowanie kodu
-  2 of 302 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+  1 of 302 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    10 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   AstroGame.vcxproj -> C:\Users\jakub\Desktop\Astro\AstroGame\x64\Release\AstroGame.exe

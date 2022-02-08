@@ -368,7 +368,7 @@ int main()
 
 			/*UPDATE*/
 			playerCenter = Vector2f(player.getPosition().x + player.getSize().x / 2, player.getPosition().y + player.getScale().y / 2);
-			if (shootTimer < 50)
+			if (shootTimer < 40)
 			{
 				shootTimer++;
 			}
@@ -388,7 +388,7 @@ int main()
 			}
 
 			//SHOOTING
-			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 50)
+			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 40)
 			{
 				bullet.setPosition(playerCenter);
 				bullets.push_back(RectangleShape(bullet));
