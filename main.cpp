@@ -61,8 +61,9 @@ void instruction(RenderWindow& window, Text howToMove[], Sprite bgSprite)
 }
 
 //GAME OVER FUNCTION
-void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double distance, Font font, Sprite bgSprite)
+void gameEnd(vector<RectangleShape>& enemies, RenderWindow& window, Text end, Text repeat[], int points, double distance, Font font, Sprite bgSprite)
 {
+	enemies.clear();
 	window.draw(bgSprite);
 	int highestPoints = 0;
 	ofstream highscoreWrite;
@@ -115,23 +116,23 @@ void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double d
 
 
 //GAME RESTART FUNCTION
-void gameRestart(int& shootTimer, int& points, double& distancePassed, int& enemyTimer, float& movementSpeed, int& hp, int& k, float& dt, int& speedTime, double& currentDistance, float& bgSpeed, float& bgY, vector<RectangleShape>& enemies, RectangleShape hpShapes[], Texture& hpIcnFull, Texture& hpIcnEmpty, RectangleShape& hpShp, Vector2f& hpPos, RectangleShape &player, RenderWindow &window)
+void gameRestart(Clock& speedTime, Clock& enemyTimer, Clock& shootTimer, int& points, double& distancePassed, float& movementSpeed, int& hp, int& k, float& dt, double& currentDistance, float& bgSpeed, float& bgY, vector<RectangleShape>& enemies, RectangleShape hpShapes[], Texture& hpIcnFull, Texture& hpIcnEmpty, RectangleShape& hpShp, Vector2f& hpPos, RectangleShape &player, RenderWindow &window)
 {
-	shootTimer = 0;
 	points = 0;
 	distancePassed = 0.0f;
-	enemyTimer = 0;
 	movementSpeed = 250.0f;
 	hp = 3;
 	k = 2;
 	dt = 0.0f;
-	speedTime = 0;
 	currentDistance = 0.1f;
 	bgSpeed = 250.0f;
 	bgY = 0.0f;
 	enemies.clear();
 	player.setPosition(Vector2f(window.getSize().x / 2 - 20.0f, window.getSize().y - player.getSize().y * 2 - 50.0f));
 	hpLoad(hpShapes, hpIcnFull, hpIcnEmpty, hpShp, hpPos);
+	enemyTimer.restart();
+	shootTimer.restart();
+	speedTime.restart();
 }
 
 
@@ -246,7 +247,7 @@ int main()
 	bullet.setTexture(&bulletTexture);
 	bullet.setSize(Vector2f(5.0f, 20.0f));
 	vector<RectangleShape> bullets;
-	int shootTimer = 0;
+	Clock shootTimer;
 	int points = 0;
 
 	//ENEMIES
@@ -261,7 +262,7 @@ int main()
 		enemyTexture[i].setSmooth(true);
 	}
 	enemy.setSize(Vector2f(55.0f, 55.0f));
-	int enemyTimer = 0;
+	Clock enemyTimer;
 	float movementSpeed = 250.0f;
 
 	//HP ICONS
@@ -294,7 +295,7 @@ int main()
 	distance.setFillColor(Color::White);
 	distance.setPosition(20, 50);
 	double distancePassed = 0.0f;
-	int speedTime = 0;
+	Clock speedTime;
 	double currentDistance = 0.1f;
 
 	//SOUNDS
@@ -352,6 +353,9 @@ int main()
 		//MAIN MENU WINDOW
 		if (menuDisplayed)
 		{
+			enemyTimer.restart();
+			shootTimer.restart();
+			speedTime.restart();
 			showMenu(window, menu, 4, menuBgSprite);
 			if (Mouse::isButtonPressed(Mouse::Button::Left))
 			{
@@ -376,14 +380,15 @@ int main()
 		//GAME OVER WINDOW
 		if (gameOver)
 		{
-			gameEnd(window, endText, repeat, points, distancePassed, font, bgSprite);
+			
+			gameEnd(enemies, window, endText, repeat, points, distancePassed, font, bgSprite);
 			if (Mouse::isButtonPressed(Mouse::Button::Left))
 			{
 				auto mousePosition = Mouse::getPosition(window);
 				auto translatedPosition = window.mapPixelToCoords(mousePosition);
 				if (repeat[0].getGlobalBounds().contains(translatedPosition))
 				{
-					gameRestart(shootTimer, points, distancePassed, enemyTimer, movementSpeed, hp, k, dt, speedTime, currentDistance, bgSpeed, bgY, enemies, wsk, hpIcnFull, hpIcnEmpty, hpShp, hpPos, player, window);
+					gameRestart(speedTime, enemyTimer, shootTimer, points, distancePassed, movementSpeed, hp, k, dt, currentDistance, bgSpeed, bgY, enemies, wsk, hpIcnFull, hpIcnEmpty, hpShp, hpPos, player, window);
 					gameOver = false;
 					menuDisplayed = true;
 				}
@@ -418,10 +423,7 @@ int main()
 
 			/*UPDATE*/
 			playerCenter = Vector2f(player.getPosition().x + player.getSize().x / 2, player.getPosition().y + player.getScale().y / 2);
-			if (shootTimer < 35)
-			{
-				shootTimer++;
-			}
+			
 
 			//PLAYER MOVEMENT
 			float newPos = player.getPosition().x;
@@ -438,12 +440,13 @@ int main()
 			}
 
 			//SHOOTING
-			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 35)
+			Time elapsedShootTimer = shootTimer.getElapsedTime();
+			if (Keyboard::isKeyPressed(Keyboard::Space) && elapsedShootTimer.asSeconds() >= 0.35f)
 			{
 				laserSound.play();
 				bullet.setPosition(playerCenter);
 				bullets.push_back(RectangleShape(bullet));
-				shootTimer = 0;
+				shootTimer.restart();
 			}
 			for (size_t i = 0; i < bullets.size(); i++)
 			{
@@ -455,44 +458,34 @@ int main()
 			}			
 
 			//ENEMIES
-			if (movementSpeed < 490.0f)
+			Time elapsedEnemyTimer = enemyTimer.getElapsedTime();
+
+			if (movementSpeed < 460.0f)
 			{
-				if (enemyTimer < 65)
-				{
-					enemyTimer++;
-				}
-				if (enemyTimer >= 65)
+				if (elapsedEnemyTimer.asSeconds() >= 0.45f)
 				{
 					enemy.setPosition((rand() % int(window.getSize().x - enemy.getSize().x)), -40.0f);
 					enemy.setTexture(&enemyTexture[rand() % 3]);
 					enemies.push_back(RectangleShape(enemy));
-					enemyTimer = 0;
+					enemyTimer.restart();
 				}
 			}
 			else
 			{
-				if (enemyTimer < 45)
-				{
-					enemyTimer++;
-				}
-				if (enemyTimer >= 45)
+				if (elapsedEnemyTimer.asSeconds() >= 0.3f)
 				{
 					enemy.setPosition((rand() % int(window.getSize().x - enemy.getSize().x)), -40.0f);
 					enemy.setTexture(&enemyTexture[rand() % 3]);
 					enemies.push_back(RectangleShape(enemy));
-					enemyTimer = 0;
+					enemyTimer.restart();
 				}
 			}
 
+			Time elapsedSpeedTimer = speedTime.getElapsedTime();
 
-			if (speedTime < 1200)
+			if (elapsedSpeedTimer.asSeconds() >= 8.0f)
 			{
-				speedTime++;
-			}
-
-			if (speedTime >= 1200)
-			{
-				if (movementSpeed < 550)
+				if (movementSpeed < 550.0f)
 				{
 					movementSpeed += 30.0f;
 					bgSpeed += 50.0f;
@@ -505,7 +498,7 @@ int main()
 					bgSpeed = 750.0f;
 					currentDistance = 0.6f;
 				}
-				speedTime = 0;
+				speedTime.restart();
 			}
 
 
@@ -550,6 +543,7 @@ int main()
 			counter.setString("Points: " + to_string(points));
 			if (hp == 0)
 			{
+				enemies.clear();
 				gameOver = true;
 			}
 
