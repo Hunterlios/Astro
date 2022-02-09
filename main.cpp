@@ -14,6 +14,8 @@
 using namespace std;
 using namespace sf;
 
+
+//HP TEXTURES LOAD
 void hpLoad(RectangleShape hpShapes[], Texture& hpIcnFull, Texture& hpIcnEmpty, RectangleShape& hpShp, Vector2f& hpPos)
 {
 	float j = 40;
@@ -36,6 +38,7 @@ void hpLoad(RectangleShape hpShapes[], Texture& hpIcnFull, Texture& hpIcnEmpty, 
 	}
 }
 
+//MENU FUNCTION
 void showMenu(RenderWindow& window, Text menu[], int n, Sprite bgSprite)
 {
 	window.draw(bgSprite);
@@ -46,6 +49,7 @@ void showMenu(RenderWindow& window, Text menu[], int n, Sprite bgSprite)
 	
 }
 
+//HOW TO PLAY MENU FUNCTION
 void instruction(RenderWindow& window, Text howToMove[], Sprite bgSprite)
 {
 	window.draw(bgSprite);
@@ -56,6 +60,7 @@ void instruction(RenderWindow& window, Text howToMove[], Sprite bgSprite)
 	
 }
 
+//GAME OVER FUNCTION
 void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double distance, Font font, Sprite bgSprite)
 {
 	window.draw(bgSprite);
@@ -109,6 +114,7 @@ void gameEnd(RenderWindow& window, Text end, Text repeat[], int points, double d
 }
 
 
+//GAME RESTART FUNCTION
 void gameRestart(int& shootTimer, int& points, double& distancePassed, int& enemyTimer, float& movementSpeed, int& hp, int& k, float& dt, int& speedTime, double& currentDistance, float& bgSpeed, float& bgY, vector<RectangleShape>& enemies, RectangleShape hpShapes[], Texture& hpIcnFull, Texture& hpIcnEmpty, RectangleShape& hpShp, Vector2f& hpPos, RectangleShape &player, RenderWindow &window)
 {
 	shootTimer = 0;
@@ -162,32 +168,35 @@ int main()
 	//MENU
 	bool menuDisplayed = true;
 	bool howToPlay = false;
-	Text menu[3];
-	menu[0].setFont(font);
-	menu[1].setFont(font);
-	menu[2].setFont(font);
-	menu[0].setFillColor(Color::White);
-	menu[1].setFillColor(Color::White);
-	menu[2].setFillColor(Color::White);
+	Text menu[4];
+	for (size_t i = 0; i < 4; i++)
+	{
+		menu[i].setFont(font);
+		menu[i].setFillColor(Color::White);
+	}
 	menu[0].setPosition(window.getSize().x / 2 - 90.0f, window.getSize().y / 2 - 100.0f);
 	menu[1].setPosition(window.getSize().x / 2 - 40.0f, window.getSize().y / 2 + 20.0f);
 	menu[2].setPosition(window.getSize().x / 2 - 125.0f, window.getSize().y / 2 + 160.0f);
+	menu[3].setPosition(window.getSize().x / 2 - 155.0f, window.getSize().y / 2 + 240.0f);
 	menu[0].setCharacterSize(80);
 	menu[1].setCharacterSize(40);
 	menu[2].setCharacterSize(40);
+	menu[3].setCharacterSize(25);
 	menu[0].setString("PLAY");
 	menu[1].setString("EXIT");
 	menu[2].setString("HOW TO PLAY");
+	menu[3].setString(" PRESS UP AND DOWN KEYS\nTO CHANGE MUSIC VOLUME");
 
 	//HOW TO PLAY
 	Text howToMove[2];
-	howToMove[0].setFont(font);
-	howToMove[0].setFillColor(Color::White);
+	for (size_t i = 0; i < 2; i++)
+	{
+		howToMove[i].setFont(font);
+		howToMove[i].setFillColor(Color::White);
+	}
 	howToMove[0].setCharacterSize(30);
 	howToMove[0].setPosition(window.getSize().x / 2 - 260.0f, window.getSize().y / 2 - 200.0f);
 	howToMove[0].setString("Use A to move left and D to move right.\n\t\t\t      Use SPACE to shoot.");
-	howToMove[1].setFont(font);
-	howToMove[1].setFillColor(Color::White);
 	howToMove[1].setCharacterSize(40);
 	howToMove[1].setPosition(window.getSize().x / 2 - 110.0f, window.getSize().y / 2 - 20.0f);
 	howToMove[1].setString("MAIN MENU");
@@ -202,14 +211,14 @@ int main()
 	endText.setPosition(window.getSize().x / 2 - 170.0f, window.getSize().y / 2 - 200.0f);
 	endText.setCharacterSize(60);
 	endText.setString("GAME OVER");
-	repeat[0].setFont(font);
-	repeat[1].setFont(font);
-	repeat[0].setFillColor(Color::White);
-	repeat[1].setFillColor(Color::White);
+	for (size_t i = 0; i < 2; i++)
+	{
+		repeat[i].setFont(font);
+		repeat[i].setFillColor(Color::White);
+		repeat[i].setCharacterSize(40);
+	}
 	repeat[0].setPosition(window.getSize().x / 2 - 120.0f, window.getSize().y / 2 + 100.0f);
 	repeat[1].setPosition(window.getSize().x / 2 - 50.0f, window.getSize().y / 2 + 160.0f);
-	repeat[0].setCharacterSize(40);
-	repeat[1].setCharacterSize(40);
 	repeat[0].setString("PLAY AGAIN");
 	repeat[1].setString("EXIT");
 
@@ -288,6 +297,26 @@ int main()
 	int speedTime = 0;
 	double currentDistance = 0.1f;
 
+	//SOUNDS
+	Music music;
+	music.openFromFile("sounds/backgroundMusic.wav");
+	music.setVolume(50);
+	music.play();
+	music.setLoop(true);
+
+	SoundBuffer buffer[3];
+	buffer[0].loadFromFile("sounds/laserSound.wav");
+	buffer[1].loadFromFile("sounds/enemyHit.wav");
+	buffer[2].loadFromFile("sounds/playerHit.wav");
+	Sound laserSound, enemyHit, playerHit;
+	laserSound.setBuffer(buffer[0]);
+	laserSound.setVolume(50);
+	enemyHit.setBuffer(buffer[1]);
+	enemyHit.setVolume(50);
+	playerHit.setBuffer(buffer[2]);
+	playerHit.setVolume(50);
+
+
 	/*MAIN LOOP*/
 	while (window.isOpen())
 	{
@@ -299,13 +328,31 @@ int main()
 			{
 			case Event::Closed:
 				window.close();
+			case Event::EventType::KeyPressed:
+				if (Keyboard::isKeyPressed(Keyboard::Up) && music.getVolume() < 100)
+				{
+					music.setVolume(music.getVolume() + 10);
+					laserSound.setVolume(laserSound.getVolume() + 10);
+					enemyHit.setVolume(enemyHit.getVolume() + 10);
+					playerHit.setVolume(playerHit.getVolume() + 10);
+				}
+				if (Keyboard::isKeyPressed(Keyboard::Down) && music.getVolume() >= 10)
+				{
+					music.setVolume(music.getVolume() - 10);
+					laserSound.setVolume(laserSound.getVolume() - 10);
+					enemyHit.setVolume(enemyHit.getVolume() - 10);
+					playerHit.setVolume(playerHit.getVolume() - 10);
+				}
 			}
-		}
+			
 
+		}
 		window.clear();
+
+		//MAIN MENU WINDOW
 		if (menuDisplayed)
 		{
-			showMenu(window, menu, 3, menuBgSprite);
+			showMenu(window, menu, 4, menuBgSprite);
 			if (Mouse::isButtonPressed(Mouse::Button::Left))
 			{
 				auto mousePosition = Mouse::getPosition(window);
@@ -326,6 +373,7 @@ int main()
 			}
 		}
 
+		//GAME OVER WINDOW
 		if (gameOver)
 		{
 			gameEnd(window, endText, repeat, points, distancePassed, font, bgSprite);
@@ -346,6 +394,7 @@ int main()
 			}
 		}
 
+		//HOW TO PLAY WINDOW
 		if (howToPlay)
 		{
 			instruction(window, howToMove, bgSprite);
@@ -361,6 +410,7 @@ int main()
 			}
 		}
 
+		//MAIN GAME
 		if (!menuDisplayed && !gameOver && !howToPlay)
 		{
 			time = dtClock.restart();
@@ -368,7 +418,7 @@ int main()
 
 			/*UPDATE*/
 			playerCenter = Vector2f(player.getPosition().x + player.getSize().x / 2, player.getPosition().y + player.getScale().y / 2);
-			if (shootTimer < 40)
+			if (shootTimer < 35)
 			{
 				shootTimer++;
 			}
@@ -388,29 +438,30 @@ int main()
 			}
 
 			//SHOOTING
-			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 40)
+			if (Keyboard::isKeyPressed(Keyboard::Space) && shootTimer >= 35)
 			{
+				laserSound.play();
 				bullet.setPosition(playerCenter);
 				bullets.push_back(RectangleShape(bullet));
 				shootTimer = 0;
 			}
 			for (size_t i = 0; i < bullets.size(); i++)
 			{
-				bullets[i].move(0.0f, -1200.0f * dt);
+				bullets[i].move(0.0f, -1250.0f * dt);
 				if (bullets[i].getPosition().y < 0)
 				{
 					bullets.erase(bullets.begin() + i);
 				}
-			}
+			}			
 
 			//ENEMIES
 			if (movementSpeed < 490.0f)
 			{
-				if (enemyTimer < 70)
+				if (enemyTimer < 65)
 				{
 					enemyTimer++;
 				}
-				if (enemyTimer >= 70)
+				if (enemyTimer >= 65)
 				{
 					enemy.setPosition((rand() % int(window.getSize().x - enemy.getSize().x)), -40.0f);
 					enemy.setTexture(&enemyTexture[rand() % 3]);
@@ -420,11 +471,11 @@ int main()
 			}
 			else
 			{
-				if (enemyTimer < 50)
+				if (enemyTimer < 45)
 				{
 					enemyTimer++;
 				}
-				if (enemyTimer >= 50)
+				if (enemyTimer >= 45)
 				{
 					enemy.setPosition((rand() % int(window.getSize().x - enemy.getSize().x)), -40.0f);
 					enemy.setTexture(&enemyTexture[rand() % 3]);
@@ -474,6 +525,7 @@ int main()
 				{
 					if (bullets[i].getGlobalBounds().intersects(enemies[j].getGlobalBounds()))
 					{
+						enemyHit.play();
 						bullets.erase(bullets.begin() + i);
 						enemies.erase(enemies.begin() + j);
 						points++;
@@ -486,6 +538,7 @@ int main()
 			{
 				if (enemies[i].getGlobalBounds().intersects(player.getGlobalBounds()))
 				{
+					playerHit.play();
 					hp--;
 					hpShapes[k].setTexture(&hpIcnEmpty);
 					k--;

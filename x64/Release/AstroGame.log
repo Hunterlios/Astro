@@ -1,20 +1,20 @@
 ﻿  main.cpp
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(160,37): warning C4244: "argument": konwersja z "float" do "T", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(166,37): warning C4244: "argument": konwersja z "float" do "T", możliwa utrata danych
           with
           [
               T=int
           ]
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(273,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(415,32): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(429,32): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(520,39): warning C4244: "argument": konwersja z "float" do "T", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(282,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(466,32): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(480,32): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\Desktop\Astro\AstroGame\main.cpp(573,39): warning C4244: "argument": konwersja z "float" do "T", możliwa utrata danych
           with
           [
               T=int
           ]
   Trwa generowanie kodu
-  1 of 302 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  2 of 302 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    10 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   AstroGame.vcxproj -> C:\Users\jakub\Desktop\Astro\AstroGame\x64\Release\AstroGame.exe
